@@ -1,15 +1,20 @@
-var http = require('http');
+﻿//express_demo.js 文件
+var express = require('express');
+var app = express();
+var https = require('https');
+var http = require('http')
+var fs = require('fs');
 
-http.createServer(function(request, response) {
-
-    // 发送 HTTP 头部 
-    // HTTP 状态值: 200 : OK
-    // 内容类型: text/plain
-    response.writeHead(200, { 'Content-Type': 'text/plain' });
-
-    // 发送响应数据 "Hello World"
-    response.end('Hello World\n');
-}).listen(8888);
-
-// 终端打印如下信息
-console.log('Server running at http://127.0.0.1:8888/');
+var options = {
+	key:fs.readFileSync('./ssl/214102035480717.key'),
+	cert:fs.readFileSync('./ssl/214102035480717.pem'),
+}
+ 
+app.get('/', function (req, res) {
+   res.send('Hello World');
+})
+ 
+http.createServer(app).listen(80);
+https.createServer(options,app).listen(443);
+console.log("HTTPS Web Server Start ,Port:443")
+console.log("应用实例，访问地址为 http://80")
