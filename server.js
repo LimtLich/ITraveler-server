@@ -16,5 +16,5 @@ app.get('/', function (req, res) {
  
 http.createServer(app).listen(80);
 https.createServer(options,app).listen(443);
-console.log("HTTPS Web Server Start ,Port:443")
+console.log("HTTPS Web Server Start,Port:443")
 console.log("应用实例，访问地址为 http://80")
