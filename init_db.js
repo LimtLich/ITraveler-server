@@ -1,5 +1,5 @@
 var requireDir = require('require-dir')
-var model = requireDir('./models')
+var model = requireDir('./db/models')
 
 Promise.all(Object.keys(model)
     .map((k) => {
