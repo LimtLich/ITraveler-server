@@ -10,7 +10,7 @@ function connectDB(opt) {
     return new Sequelize(opt.dbname, opt.user, opt.password, {
         host: opt.host,
         dialect: 'mysql',
-        timezone: '+8:00',
+        // timezone: '+8:00',
         pool: {
             max: 12,
             min: 0,
