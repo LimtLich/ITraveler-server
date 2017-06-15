@@ -16,10 +16,7 @@ var file = sequelize.define(
     path: Sequelize.STRING,
     type: Sequelize.STRING,
     name: Sequelize.STRING,
-    type: Sequelize.STRING,
-    pic_name: Sequelize.STRING,
-    date:Sequelize.STRING,
-    describe: Sequelize.STRING,
+    type: Sequelize.STRING
   }, {
     underscored: true
   })
