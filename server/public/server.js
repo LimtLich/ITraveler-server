@@ -4,9 +4,9 @@ var exec = {
         return "success"
     },
     createTravel(req, res, next) {
-        var travel = require('../../db/models/travel')
-        var obj = req.query
-        console.log(obj)
+        // var travel = require('../../db/models/travel')
+        // var obj = req.query
+        // console.log(obj)
         return "success"
         // return travel.create({
         //     title: obj.title,
