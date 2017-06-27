@@ -3,6 +3,7 @@ var exec = {
     createTravel(req, res, next) {
         var travel = require('../../db/models/travel')
         var obj = req.query
+        console.log(obj)
         return travel.create({
             title: obj.title,
             place: obj.place,
