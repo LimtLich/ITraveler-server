@@ -10,8 +10,7 @@ var dealFile = function(fileInfo) {
     hash: fileInfo.hash,
     size: fileInfo.size,
     path: "upload/files/" + fileInfo.hash,
-    type: fileInfo.type,
-    name: fileInfo.name
+    type: fileInfo.type
   }).then(() => {
     return attachment.create({
       file_hash: fileInfo.hash,
@@ -21,7 +20,7 @@ var dealFile = function(fileInfo) {
 }
 
 var exec = {
-  getAttachmentById(req, res, next) {
+  getAttachment(req, res, next) {
     var id = req.query.id
     if (id) {
       var fs = require('fs')
@@ -48,63 +47,6 @@ var exec = {
     } else {
       return Promise.reject("no file id")
     }
-  },
-  getAttachment(req, res, next) {
-    var imgHash = req.query.hash
-    if (imgHash) {
-      var fs = require('fs')
-      var localFile = fs.readFileSync("upload/files/" + imgHash, 'binary')
-      res.write(localFile, 'binary')
-      res.end()
-    } else {
-      return Promise.reject("no file record")
-    }
-  },
-  getAllAttachment(req, res, next) {
-    var fs = require('fs')
-    var file = require('../../db/models/file')
-    return file.findAll().then((result) => {
-      if (result.length > 0) {
-        return result
-      } else {
-        return Promise.reject('no file record')
-      }
-    })
-  },
-  setPictureAttribute(req, res, next) {
-    var form = req.body.form
-    var file = require('../../db/models/file')
-    return file.findOne({
-      where: {
-        hash: form.hash
-      }
-    }).then((result) => {
-      if (result) {
-        result.pic_name = form.pic_name
-        result.date = form.date
-        result.describe = form.describe
-        return result.save()
-      } else {
-        return Promise.reject('no file record')
-      }
-    })
-  },
-  deletePic(req, res, next) {
-    var hash = req.body.hash
-    var file = require('../../db/models/file')
-    var attachment = require('../../db/models/attachment')
-    return Promise.all([
-      file.destroy({
-        where:{
-          hash:hash
-        }
-      }),
-      attachment.destroy({
-        where:{
-          file_hash:hash
-        }
-      })
-    ])
   },
   file(req) {
     return new Promise(function(resolve, reject) {
@@ -149,7 +91,7 @@ module.exports = (req, res, next) => {
   Promise.resolve(action).then(function(result) {
     return exec[result](req, res, next)
   }).then(function(result) {
-    if (req.params.action != "getAttachment" && req.params.action != "getAttachmentById") {
+    if (req.params.action != "getAttachment") {
       res.send(result)
     }
   }).catch(function(error) {
