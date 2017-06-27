@@ -1,5 +1,8 @@
 ﻿
 var exec = {
+    test(req, res, next) {
+        return "success"
+    },
     createTravel(req, res, next) {
         var travel = require('../../db/models/travel')
         var obj = req.query
