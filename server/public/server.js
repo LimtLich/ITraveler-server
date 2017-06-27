@@ -1,6 +1,6 @@
 ﻿
 var exec = {
-    createTravel(req, res, next) {
+    createTravel(req, res) {
         var travel = require('../../db/models/travel')
         var obj = req.query
         console.log(obj)
@@ -13,6 +13,21 @@ var exec = {
             return res.guid
         })
     },
+    getTravelInfo(req, res) {
+        var travel = require('../../db/models/travel')
+        var guid = req.query.guid
+        return travel.findOne({
+            where: {
+                guid: guid
+            }
+        }).then((res) => {
+            if (res) {
+              return res
+            } else {
+              return Promise.reject('游记不存在')
+            }
+        })
+    }
 }
 
 
