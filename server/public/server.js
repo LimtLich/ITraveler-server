@@ -1,21 +1,17 @@
 ﻿
 var exec = {
-    test(req, res, next) {
-        return "success"
-    },
     createTravel(req, res, next) {
-        // var travel = require('../../db/models/travel')
-        // var obj = req.query
-        // console.log(obj)
-        return "success"
-        // return travel.create({
-        //     title: obj.title,
-        //     place: obj.place,
-        //     cover_img: obj.cover_img,
-        //     date: obj.date
-        // }).then((res) => {
-        //     return res.guid
-        // })
+        var travel = require('../../db/models/travel')
+        var obj = req.query
+        console.log(obj)
+        return travel.create({
+            title: obj.title,
+            place: obj.place,
+            cover_img: obj.cover_img,
+            date: obj.date
+        }).then((res) => {
+            return res.guid
+        })
     },
 }
 
