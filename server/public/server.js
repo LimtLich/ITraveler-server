@@ -29,10 +29,12 @@ var exec = {
         })
     },
     editTravel(req, res) {
-      var travel = require('../../db/models/travel')
-      var travel_detail = require('../../db/models/travel_detail')
-      var obj = req.query
-      console.log(obj)
+        var travel = require('../../db/models/travel')
+        var travel_detail = require('../../db/models/travel_detail')
+        var travelID = req.query.travelID
+        var travelInfo = req.query.travelInfo
+        var paragraphContent = req.query.paragraphContent
+        console.log(obj)
     }
 }
 
