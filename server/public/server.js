@@ -22,11 +22,17 @@ var exec = {
             }
         }).then((res) => {
             if (res) {
-              return res
+                return res
             } else {
-              return Promise.reject('游记不存在')
+                return Promise.reject('游记不存在')
             }
         })
+    },
+    editTravel(req, res) {
+      var travel = require('../../db/models/travel')
+      var travel_detail = require('../../db/models/travel_detail')
+      var obj = req.query
+      console.log(obj)
     }
 }
 
