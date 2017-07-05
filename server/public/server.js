@@ -41,14 +41,21 @@ var exec = {
             }
         }).then((res) => {
             if (res) {
-                return res.update(travelInfo)
+                console.log('in update travel')
+                return res.update({
+                    title: travelInfo.title,
+                    place: travelInfo.place,
+                    cover_img: travelInfo.cover_img,
+                    date: travelInfo.date
+                })
             }
         }).then(() => {
             var detailUpsertList = []
+            console.log('in update detail')
             paragraphContent.forEach((e) => {
                 detailUpsertList.push(Promise.resolve().then(() => {
-                    return travel_detail.upsert(e).then((v)=>{
-                      console.log(v)
+                    return travel_detail.upsert(e).then((v) => {
+                        console.log(v)
                     })
                 }))
             })
