@@ -34,7 +34,24 @@ var exec = {
         var travelID = req.query.travelID
         var travelInfo = req.query.travelInfo
         var paragraphContent = req.query.paragraphContent
-        console.log(obj)
+        return travel.findOne({
+            where: {
+                guid: travelID
+            }
+        }).then((res) => {
+            if (res) {
+                return res.update(travelInfo)
+            }
+        }).then(() => {
+            var detailUpsertList = []
+            paragraphContent.forEach((e) => {
+                detailUpsertList.push(Promise.solve().then(() => {
+                    return travel_detail.upsert(e).then((v)=>{
+                      console.log(v)
+                    })
+                }))
+            })
+        })
     }
 }
 
