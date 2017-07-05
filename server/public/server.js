@@ -35,7 +35,7 @@ var exec = {
         var travelInfo = JSON.parse(req.query.travelInfo)
         var paragraphContent = JSON.parse(req.query.paragraphContent)
         var detailUpsertList = []
-        var indexList[]
+        var indexList = []
         console.log(req.query)
         return travel.findOne({
             where: {
