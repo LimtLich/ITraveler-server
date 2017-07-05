@@ -32,7 +32,7 @@ var exec = {
         var travel = require('../../db/models/travel')
         var travel_detail = require('../../db/models/travel_detail')
         var travelID = req.query.travelID
-        var travelInfo = req.query.travelInfo
+        var travelInfo = JSON.parse(req.query.travelInfo)
         var paragraphContent = JSON.parse(req.query.paragraphContent)
         console.log(req.query)
         return travel.findOne({
@@ -40,11 +40,9 @@ var exec = {
                 guid: travelID
             }
         }).then((res) => {
+            console.log('in update travel')
             if (res) {
-                console.log('in update travel')
                 return res.update(travelInfo)
-            } else {
-                console.log('not in update travel')
             }
         }).then(() => {
             var detailUpsertList = []
