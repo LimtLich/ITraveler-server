@@ -55,7 +55,7 @@ var exec = {
                         }
                     }).then((details) => {
                         if (details) {
-                            return details.upsert(e).then((v) => {
+                            return travel_detail.upsert(e,details).then((v) => {
                                 console.log(v)
                             })
                         } else {
