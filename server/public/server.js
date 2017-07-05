@@ -34,6 +34,7 @@ var exec = {
         var travelID = req.query.travelID
         var travelInfo = req.query.travelInfo
         var paragraphContent = req.query.paragraphContent
+        console.log(req.query)
         return travel.findOne({
             where: {
                 guid: travelID
