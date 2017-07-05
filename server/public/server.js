@@ -34,42 +34,52 @@ var exec = {
         var travelID = req.query.travelID
         var travelInfo = JSON.parse(req.query.travelInfo)
         var paragraphContent = JSON.parse(req.query.paragraphContent)
+        var detailUpsertList = []
+        var indexList[]
         console.log(req.query)
         return travel.findOne({
             where: {
                 guid: travelID
             }
         }).then((res) => {
-            console.log('in update travel')
             if (res) {
                 return res.update(travelInfo)
             }
         }).then(() => {
-            var detailUpsertList = []
-            console.log('in update detail')
             paragraphContent.forEach((e) => {
+                indexList.push(e.index)
                 detailUpsertList.push(Promise.resolve().then(() => {
-                    return travel_detail.findAll({
+                    return travel_detail.findOne({
                         where: {
-                            travel_guid: travelID
+                            $and: {
+                                travel_guid: travelID,
+                                index: e.index
+                            }
                         }
-                    }).then((details) => {
-                        if (details) {
-                            return travel_detail.upsert(e,details).then((v) => {
-                                console.log(v)
-                            })
+                    }).then((detail) => {
+                        if (detail) {
+                            return detail.update(e)
                         } else {
-                            return travel_detail.create(e)
+                            return detail.create(e)
                         }
                     })
                 }))
             })
             return Promise.all(detailUpsertList)
+        }).then(() => {
+            return travel_detail.destroy({
+                where: {
+                    $and: {
+                        travel_guid: travelID,
+                        index: {
+                            $notin: indexList
+                        }
+                    }
+                }
+            })
         })
     }
 }
-
-
 
 
 module.exports = (req, res, next) => {

@@ -6,13 +6,10 @@ var travel_detail = sequelize.define(
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
-            unique: true
-        },
-        travel_guid: Sequelize.STRING,
-        index: {
-            type: Sequelize.INTEGER,
             primaryKey: true
         },
+        travel_guid: Sequelize.STRING,
+        index:Sequelize.INTEGER,
         key: Sequelize.STRING,
         value: Sequelize.STRING,
     }, {
