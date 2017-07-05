@@ -46,7 +46,7 @@ var exec = {
         }).then(() => {
             var detailUpsertList = []
             paragraphContent.forEach((e) => {
-                detailUpsertList.push(Promise.solve().then(() => {
+                detailUpsertList.push(Promise.resolve().then(() => {
                     return travel_detail.upsert(e).then((v)=>{
                       console.log(v)
                     })
