@@ -40,14 +40,11 @@ var exec = {
                 guid: travelID
             }
         }).then((res) => {
-            console.log('in update travel')
             if (res) {
-                return res.update({
-                    title: travelInfo.title,
-                    place: travelInfo.place,
-                    cover_img: travelInfo.cover_img,
-                    date: travelInfo.date
-                })
+                console.log('in update travel')
+                return res.update(travelInfo)
+            } else {
+                console.log('not in update travel')
             }
         }).then(() => {
             var detailUpsertList = []
