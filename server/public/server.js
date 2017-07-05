@@ -49,8 +49,18 @@ var exec = {
             console.log('in update detail')
             paragraphContent.forEach((e) => {
                 detailUpsertList.push(Promise.resolve().then(() => {
-                    return travel_detail.upsert(e).then((v) => {
-                        console.log(v)
+                    return travel_detail.findAll({
+                        where: {
+                            travel_guid: travelID
+                        }
+                    }).then((details) => {
+                        if (details) {
+                            return details.upsert(e).then((v) => {
+                                console.log(v)
+                            })
+                        } else {
+                            return travel_detail.create(e)
+                        }
                     })
                 }))
             })
