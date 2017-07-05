@@ -60,7 +60,7 @@ var exec = {
                         if (detail) {
                             return detail.update(e)
                         } else {
-                            return detail.create(e)
+                            return travel_detail.create(e)
                         }
                     })
                 }))
