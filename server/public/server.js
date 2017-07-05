@@ -51,6 +51,7 @@ var exec = {
                     })
                 }))
             })
+            return Promise.all(detailUpsertList)
         })
     }
 }
