@@ -42,12 +42,7 @@ var exec = {
         }).then((res) => {
             console.log('in update travel')
             if (res) {
-                return res.update({
-                    title: travelInfo.title,
-                    place: travelInfo.place,
-                    cover_img: travelInfo.cover_img,
-                    date: travelInfo.date
-                })
+                return res.update(travelInfo)
             }
         }).then(() => {
             var detailUpsertList = []
