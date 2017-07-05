@@ -32,8 +32,8 @@ var exec = {
         var travel = require('../../db/models/travel')
         var travel_detail = require('../../db/models/travel_detail')
         var travelID = req.query.travelID
-        var travelInfo = req.query.travelInfo
-        var paragraphContent = req.query.paragraphContent
+        var travelInfo = JSON.parse(req.query.travelInfo)
+        var paragraphContent = JSON.parse(req.query.paragraphContent)
         console.log(req.query)
         return travel.findOne({
             where: {
