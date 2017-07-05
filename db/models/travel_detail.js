@@ -4,10 +4,11 @@ var sequelize = require('../sequelize')
 var travel_detail = sequelize.define(
     'travel_detail', {
         id: {
-            autoIncrement: true
+            autoIncrement: true,
+            type: Sequelize.INTEGER,
         },
         travel_guid: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             primaryKey: true
         },
         index: Sequelize.INTEGER,
