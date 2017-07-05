@@ -67,16 +67,17 @@ var exec = {
             })
             return Promise.all(detailUpsertList)
         }).then(() => {
-            return travel_detail.destroy({
-                where: {
-                    $and: {
-                        travel_guid: travelID,
-                        index: {
-                            $notin: indexList
-                        }
-                    }
-                }
-            })
+          console.log('in destroy')
+            // return travel_detail.destroy({
+            //     where: {
+            //         $and: {
+            //             travel_guid: travelID,
+            //             index: {
+            //                 $notin: indexList
+            //             }
+            //         }
+            //     }
+            // })
         })
     }
 }
