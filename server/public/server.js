@@ -1,8 +1,11 @@
 ﻿﻿
 var exec = {
     getOpenid(req, res) {
-      var code = req.query.code
-      console.log(req)
+        var code = req.query.code
+        var axios = require('axios')
+        return axios.get('https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code='+code+'grant_type=authorization_code').then((res) => {
+            console.log(res.openid)
+        })
     },
     createTravel(req, res) {
         var travel = require('../../db/models/travel')
