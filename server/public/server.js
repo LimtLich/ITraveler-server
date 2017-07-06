@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 var exec = {
     createTravel(req, res) {
         var travel = require('../../db/models/travel')
