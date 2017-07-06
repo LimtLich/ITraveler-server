@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 var exec = {
     createTravel(req, res) {
         var travel = require('../../db/models/travel')
@@ -67,32 +67,43 @@ var exec = {
             })
             return Promise.all(detailUpsertList)
         }).then(() => {
-          console.log(indexList)
-        	return travel_detail.findAll({
-        		where: {
-                    $and: {
-                        travel_guid: travelID,
-                        index: {
-                            $notIn: indexList
+            return travel_detail.destroy({
+                    where: {
+                        $and: {
+                            travel_guid: travelID,
+                            index: {
+                                $notIn: indexList
+                            }
                         }
                     }
-                }
-        	}).then((result)=>{
-        		if(result.length>0){
-        			return travel_detail.destroy({
-		                where: {
-		                    $and: {
-		                        travel_guid: travelID,
-		                        index: {
-		                            $notIn: indexList
-		                        }
-		                    }
-		                }
-		            }).then(()=>{
-		            	return 'success'
-		            })
-        		}
-        	})
+                }).then(() => {
+                    return 'success'
+                })
+                // return travel_detail.findAll({
+                // 	where: {
+                //           $and: {
+                //               travel_guid: travelID,
+                //               index: {
+                //                   $notIn: indexList
+                //               }
+                //           }
+                //       }
+                // }).then((result)=>{
+                // 	if(result.length>0){
+                // 		return travel_detail.destroy({
+                //           where: {
+                //               $and: {
+                //                   travel_guid: travelID,
+                //                   index: {
+                //                       $notIn: indexList
+                //                   }
+                //               }
+                //           }
+                //       }).then(()=>{
+                //       	return 'success'
+                //       })
+                // 	}
+                // })
         })
     }
 }
