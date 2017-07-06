@@ -3,8 +3,10 @@ var exec = {
     getOpenid(req, res) {
         var code = req.query.code
         var axios = require('axios')
-        return axios.get('https://api.weixin.qq.com/sns/jscode2session?appid=' + "wxd0c4b4bff82e0eb1" + '&secret=' + "96d398394f035b667ac5ae53377010e9" + '&js_code=' + code + 'grant_type=authorization_code').then((res) => {
-            console.log(res.openid)
+        var appid = 'wxd0c4b4bff82e0eb1'
+        var appsecret = '96d398394f035b667ac5ae53377010e9'
+        return axios.get('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + 'grant_type=authorization_code').then((res) => {
+            console.log(res)
         })
     },
     createTravel(req, res) {
