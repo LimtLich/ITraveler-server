@@ -1,5 +1,9 @@
 ﻿﻿
 var exec = {
+    getOpenid(req, res) {
+      var code = req.query.code
+      console.log(req)
+    },
     createTravel(req, res) {
         var travel = require('../../db/models/travel')
         var obj = req.query
