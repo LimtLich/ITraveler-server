@@ -1,20 +1,24 @@
 ﻿﻿
 var exec = {
-    getOpenid(req, res) {
+    login(req, res) {
         var code = req.query.code
         var axios = require('axios')
         var appid = 'wxd0c4b4bff82e0eb1'
         var appsecret = '96d398394f035b667ac5ae53377010e9'
-        console.log(code)
-        return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
-            console.log(res.data)
-        })
+        if (req.session.openid) {
+            console.log('login')
+        } else {
+            return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
+                req.session.openid = res.data.openid
+            })
+        }
     },
     createTravel(req, res) {
         var travel = require('../../db/models/travel')
         var obj = req.query
         console.log(obj)
         return travel.create({
+            openid: req.session.openid,
             title: obj.title,
             place: obj.place,
             cover_img: obj.cover_img,

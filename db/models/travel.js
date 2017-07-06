@@ -8,6 +8,7 @@ var travel = sequelize.define(
             primaryKey: true,
             defaultValue: Sequelize.UUIDV4
         },
+        openid:Sequelize.STRING,
         title: Sequelize.STRING,
         place: Sequelize.STRING,
         cover_img: Sequelize.STRING,
