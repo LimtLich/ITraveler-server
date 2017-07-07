@@ -94,6 +94,17 @@ var exec = {
                 return 'success'
             })
         })
+    },
+    getTravels(req, res) {
+      var travel = require('../../db/models/travel')
+      var travel_detail = require('../../db/models/travel_detail')
+      travel.hasMany(travel_detail)
+      return travel.findAll({
+        where:{
+          openid:req.session.openid
+        },
+        include:travel_detail
+      })
     }
 }
 
