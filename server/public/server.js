@@ -5,17 +5,18 @@ var exec = {
         var axios = require('axios')
         var appid = 'wxd0c4b4bff82e0eb1'
         var appsecret = '96d398394f035b667ac5ae53377010e9'    
-        if (req.session.openid) {
-            console.log('login')
-            console.log('session2:',req.session)
-        } else {     	
-            return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
-            	var sessionID = req.sessionID
-                req.session[sessionID] = {openid:res.data.openid,session_key:res.data.session_key}
-                console.log('in session',req.session[sessionID])
-                return sessionID
-            })
-        }
+        // if (req.session.openid) {
+        //     console.log('login')
+        //     console.log('session2:',req.session)
+        // } else {     	
+        //     return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
+        //     	var sessionID = req.sessionID
+        //         req.session[sessionID] = {openid:res.data.openid,session_key:res.data.session_key}
+        //         console.log('in session',req.session[sessionID])
+        //         return sessionID
+        //     })
+        // }
+        return 'success'
 
     },
     createTravel(req, res) {
@@ -116,10 +117,7 @@ var exec = {
 
 module.exports = (req, res, next) => {
     var action = req.params.action
-    Promise.resolve(action).then(function(result) {
-    	if(req.cookies.sessionID){
-    		req.sessionID = req.cookies.sessionID
-    	}    	      	 	
+    Promise.resolve(action).then(function(result) {   	      	 	
         return exec[result](req, res, next)
     }).then(function(result) {
         res.send(result)

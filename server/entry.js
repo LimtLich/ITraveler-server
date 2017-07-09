@@ -5,7 +5,8 @@ var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 var redis = require('redis')
 
-var client = redis.createClient(6379, '119.23.221.116')
+var client = redis.createClient(6379, '127.0.0.1',{})
+
 client.auth('lich69669', function() {
     console.log('pass redis auth!')
 })
