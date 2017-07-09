@@ -1,6 +1,7 @@
 ﻿var express = require('express')
 var session = require('express-session')
 var bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser')
 
 var getClientAddress = function(req) {
   return (req.headers['x-forwarded-for'] || '').split(',')[0] ||
@@ -17,6 +18,10 @@ module.exports = (app) => {
 
   // parse application/json
   app.use(bodyParser.json())
+
+  app.use(cookieParser())
+
+  app.use(cookieParser('Limt'));
 
   app.use(session({
     secret: '1234567890QWERTY'
