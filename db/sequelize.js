@@ -2,7 +2,7 @@ var Sequelize = require('sequelize')
 var sequelize = connectDB({
     host: '127.0.0.1',
     user: 'root',
-    password: 'lich69669',
+    password: 'limt123',
     dbname: 'itravel'
 })
 

@@ -7,7 +7,7 @@ var redis = require('redis')
 
 var client = redis.createClient(6379, '127.0.0.1',{})
 
-client.auth('lich69669', function() {
+client.auth('limt123', function() {
     console.log('pass redis auth!')
 })
 client.on('ready', function(res) {
