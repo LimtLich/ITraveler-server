@@ -1,5 +1,4 @@
-﻿
-var redis = require('redis')
+﻿var redis = require('redis')
 var client = redis.createClient(6379, '127.0.0.1', {})
 client.auth('limt123')
 
@@ -9,16 +8,28 @@ var exec = {
         var axios = require('axios')
         var appid = 'wxd0c4b4bff82e0eb1'
         var appsecret = '96d398394f035b667ac5ae53377010e9'
+        if (req.cookies.sessionID) {
+            client.hgetall(req.cookies.sessionID, function(err, res) {
+                if (err) {
+                    console.log('Error:' + err);
+                    return err
+                } else {
+                    if (res) {
+                        // console.dir(res)
+                    } else {
+                        return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
+                            client.hmset(req.cookies.sessionID, {
+                                'openid': res.data.openid,
+                                'session_key': res.data.session_key
+                            }, redis.print)
 
-        if (!req.cookies.sessionID) {
-            return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
-                var sessionID = req.sessionID
-                client.hmset(sessionID, {
-                    'openid': res.data.openid,
-                    'session_key': res.data.session_key
-                }, redis.print)
-                return sessionID
+                        })
+                    }
+                }
             })
+
+        } else {
+            return req.sessionID
         }
 
     },
@@ -26,26 +37,24 @@ var exec = {
         var travel = require('../../db/models/travel')
         var obj = req.query
         console.log(obj)
-        client.hgetall(req.cookies.sessionID, function(err, res) {
-            if (err) {
-                console.log('Error:' + err);
-                return err
-            } else {
-                console.dir(res)
-                return travel.create({
-                    openid: res.openid,
-                    title: obj.title,
-                    place: obj.place,
-                    cover_img: obj.cover_img,
-                    date: obj.date
-                }).then((res) => {
-                    return res.guid
-                })
-            }
-
+        return new Promise(function(resolve,reject){
+        	client.hgetall(req.cookies.sessionID, function(err, res) {
+        		// console.dir(res)
+	            resolve(res.openid)
+        	})
+        }).then((openid)=>{
+        	console.log(openid)
+	        return travel.create({
+	            openid: openid,
+	            title: obj.title,
+	            place: obj.place,
+	            cover_img: obj.cover_img,
+	            date: obj.date
+	        }).then((res) => {
+	            return res.guid
+	        })
         })
-
-
+        
     },
     getTravelInfo(req, res) {
         var travel = require('../../db/models/travel')
@@ -119,12 +128,20 @@ var exec = {
         var travel = require('../../db/models/travel')
         var travel_detail = require('../../db/models/travel_detail')
         travel.hasMany(travel_detail)
-        return travel.findAll({
-            where: {
-                openid: req.session.openid
-            },
-            include: travel_detail
+        return new Promise(function(resolve,reject){
+        	client.hgetall(req.cookies.sessionID, function(err, res) {
+            	// console.dir(res)
+            	resolve(res.openid)
+        	})
+        }).then((openid)=>{
+        	return travel.findAll({
+	            where: {
+	                openid: openid
+	            },
+	            include: travel_detail
+	        })
         })
+               
     }
 }
 
