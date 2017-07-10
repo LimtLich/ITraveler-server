@@ -1,37 +1,49 @@
 ﻿
+var redis = require('redis')
+var client = redis.createClient(6379,'127.0.0.1',{})
+client.auth('limt123')
+
 var exec = {
     login(req, res) {
         var code = req.query.code
         var axios = require('axios')
         var appid = 'wxd0c4b4bff82e0eb1'
-        var appsecret = '96d398394f035b667ac5ae53377010e9'    
-        // if (req.session.openid) {
-        //     console.log('login')
-        //     console.log('session2:',req.session)
-        // } else {     	
-        //     return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
-        //     	var sessionID = req.sessionID
-        //         req.session[sessionID] = {openid:res.data.openid,session_key:res.data.session_key}
-        //         console.log('in session',req.session[sessionID])
-        //         return sessionID
-        //     })
-        // }
-        return 'success'
+        var appsecret = '96d398394f035b667ac5ae53377010e9'
 
+        if(!req.cookies.sessionID){
+			return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
+            	var sessionID = req.sessionID
+            	client.hmset(sessionID,{'openid':res.data.openid,'session_key':res.data.session_key},redis.print) 			          	
+                return sessionID
+            })   		
+    	}  
+        
     },
     createTravel(req, res) {
         var travel = require('../../db/models/travel')
         var obj = req.query
         console.log(obj)
-        return travel.create({
-            openid: req.session.openid,
-            title: obj.title,
-            place: obj.place,
-            cover_img: obj.cover_img,
-            date: obj.date
-        }).then((res) => {
-            return res.guid
-        })
+        client.hgetall(req.cookies.sessionID,function(err,res){
+				if(err)
+		        {
+		            console.log('Error:'+ err);
+		            return err
+		        }else{
+		        	console.dir(res)
+		        	return travel.create({
+			            openid: res.openid,
+			            title: obj.title,
+			            place: obj.place,
+			            cover_img: obj.cover_img,
+			            date: obj.date
+			        }).then((res) => {
+			            return res.guid
+			        })
+		        }            
+		        
+		})
+        
+        
     },
     getTravelInfo(req, res) {
         var travel = require('../../db/models/travel')
