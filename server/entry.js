@@ -29,7 +29,7 @@ module.exports = (app) => {
     }))
 
     app.use('/service/:permission/:type/:action', function(req, res, next) {
-        console.log('in this server')
+        console.log('service loading...')
         require('./public/' + req.params.type)(req, res, next)
     })
 

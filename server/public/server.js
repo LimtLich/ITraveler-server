@@ -22,52 +22,65 @@ var exec = {
                                 'openid': res.data.openid,
                                 'session_key': res.data.session_key
                             }, redis.print)
-
+                            // client.expire(req.sessionID, 3600 * 24)
                         })
                     }
                 }
             })
 
         } else {
-            return req.sessionID
-        }
+            return axios.post('https://api.weixin.qq.com/sns/jscode2session?appid=' + appid + '&secret=' + appsecret + '&js_code=' + code + '&grant_type=authorization_code').then((res) => {
+                client.hmset(req.sessionID, {
+                    'openid': res.data.openid,
+                    'session_key': res.data.session_key
+                }, redis.print)
+                // client.expire(req.sessionID, 3600 * 24)
+            }).then(() => {
+                return req.sessionID
+            })
 
+        }
     },
     createTravel(req, res) {
         var travel = require('../../db/models/travel')
         var obj = req.query
-        console.log(obj)
-        return new Promise(function(resolve,reject){
-        	client.hgetall(req.cookies.sessionID, function(err, res) {
-        		// console.dir(res)
-	            resolve(res.openid)
-        	})
-        }).then((openid)=>{
-        	console.log(openid)
-	        return travel.create({
-	            openid: openid,
-	            title: obj.title,
-	            place: obj.place,
-	            cover_img: obj.cover_img,
-	            date: obj.date
-	        }).then((res) => {
-	            return res.guid
-	        })
+        return new Promise(function(resolve, reject) {
+            client.hgetall(req.cookies.sessionID, function(err, res) {
+                // console.dir(res)
+                resolve(res.openid)
+            })
+        }).then((openid) => {
+            return travel.create({
+                openid: openid,
+                title: obj.title,
+                place: obj.place,
+                cover_img: obj.cover_img,
+                date: obj.date
+            }).then((res) => {
+                return res.guid
+            })
         })
-        
+
     },
     getTravelInfo(req, res) {
-        var travel = require('../../db/models/travel')
         var guid = req.query.guid
+        var travel = require('../../db/models/travel')
+        var travel_detail = require('../../db/models/travel_detail')
+        travel.hasMany(travel_detail)
+
         return travel.findOne({
             where: {
                 guid: guid
+            },
+            include: travel_detail,
+            attributes: {
+                exclude: ['openid']
             }
         }).then((res) => {
             if (res) {
                 return res
             } else {
-                return Promise.reject('游记不存在')
+                return Promise.reject('travel not exit')
             }
         })
     },
@@ -76,10 +89,8 @@ var exec = {
         var travel_detail = require('../../db/models/travel_detail')
         var travelID = req.query.travelID
         var travelInfo = JSON.parse(req.query.travelInfo)
-        var paragraphContent = JSON.parse(req.query.paragraphContent)
         var detailUpsertList = []
         var indexList = []
-        console.log(req.query)
         return travel.findOne({
             where: {
                 guid: travelID
@@ -89,7 +100,8 @@ var exec = {
                 return res.update(travelInfo)
             }
         }).then(() => {
-            paragraphContent.forEach((e) => {
+        	console.log(travelInfo.travel_details)
+            travelInfo.travel_details.forEach((e) => {
                 indexList.push(e.index)
                 detailUpsertList.push(Promise.resolve().then(() => {
                     return travel_detail.findOne({
@@ -119,29 +131,30 @@ var exec = {
                         }
                     }
                 }
-            }).then(() => {
-                return 'success'
+            }).then(()=>{
+            	return 'success'
             })
         })
     },
     getTravels(req, res) {
         var travel = require('../../db/models/travel')
-        var travel_detail = require('../../db/models/travel_detail')
-        travel.hasMany(travel_detail)
-        return new Promise(function(resolve,reject){
-        	client.hgetall(req.cookies.sessionID, function(err, res) {
-            	// console.dir(res)
-            	resolve(res.openid)
-        	})
-        }).then((openid)=>{
-        	return travel.findAll({
-	            where: {
-	                openid: openid
-	            },
-	            include: travel_detail
-	        })
+        console.log('cookies', req.cookies)
+        return new Promise(function(resolve, reject) {
+            client.hgetall(req.cookies.sessionID, function(err, res) {
+                // console.dir(res)
+                resolve(res.openid)
+            })
+        }).then((openid) => {
+            return travel.findAll({
+                where: {
+                    openid: openid
+                },
+                attributes: {
+                    exclude: ['openid']
+                }
+            })
         })
-               
+
     }
 }
 
